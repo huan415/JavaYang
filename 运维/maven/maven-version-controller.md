@@ -133,6 +133,7 @@ build-helper-maven-plugin作用：${maven.build.timestamp}默认是UTC时区，�
     <profile>
         <id>beta</id>
         <properties>
+            <!--${maven.build.timestamp}默认是UTC时区，使用build-helper-maven-plugin自定义时区和时间格式-->
             <revision>${yangyc.version}-${maven.build.timestamp}-beta</revision>
         </properties>
         <!--不同环境指定不同的版本-->
