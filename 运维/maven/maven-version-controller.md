@@ -36,15 +36,46 @@ Maven 3.5.0-beta-1版本开始，就可以使用`${revision}`, `${sha1}` 和 `${
     <groupId>com.javayang.test</groupId>
     <artifactId>yang-service</artifactId>
     <version>${revision}</version>
+ <properties>
+        <yangyc.version>1.0.0</message.version>
+        <revision>${yangyc.version}-SNAPSHOT</revision>
+        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>2020.0.3</spring-cloud.version>
+    </properties>
 ```
 
 ## flatten-maven-plugin 插件
 
 flatten-maven-plugin 作用是在生成压缩包的.flattened-pom.xml（此时将`${revision}`等占位符替换掉），在isntall或deploy时用.flattened-pom.xml替换原有的pom.xml
 
+build-helper-maven-plugin作用：${maven.build.timestamp}默认是UTC时区，使用build-helper-maven-plugin自定义时区和时间格式
+
 ```
 <build>
         <plugins>
+         <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <name>build.time</name>
+                    <pattern>yyyyMMdd</pattern>
+                    <timeZone>GMT+8</timeZone>
+                    <regex/>
+                    <source/>
+                    <value/>
+                </configuration>
+            </plugin>
+             <!--替换占位符-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -90,7 +121,7 @@ flatten-maven-plugin 作用是在生成压缩包的.flattened-pom.xml（此时�
             <activeByDefault>true</activeByDefault>
         </activation>
         <properties>
-            <revision>${message.version}-SNAPSHOT</revision>
+            <revision>${yangyc.version}-SNAPSHOT</revision>
         </properties>
         <!--不同环境指定不同的版本-->
         <dependencyManagement>
@@ -102,7 +133,7 @@ flatten-maven-plugin 作用是在生成压缩包的.flattened-pom.xml（此时�
     <profile>
         <id>beta</id>
         <properties>
-            <revision>${message.version}-${message.package.time}-beta</revision>
+            <revision>${yangyc.version}-${maven.build.timestamp}-beta</revision>
         </properties>
         <!--不同环境指定不同的版本-->
         <dependencyManagement>
@@ -114,7 +145,7 @@ flatten-maven-plugin 作用是在生成压缩包的.flattened-pom.xml（此时�
     <profile>
         <id>release</id>
         <properties>
-            <revision>${message.version}</revision>
+            <revision>${yangyc.version}</revision>
         </properties>
         <!--不同环境指定不同的版本-->
         <dependencyManagement>
