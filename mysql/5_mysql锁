@@ -71,6 +71,44 @@ C--commit或时间太长-->D("redo log: 日志文件 ib_logfile0")
 D--重启数据库 或者redo log太大-->A
 ```
 
+```mermaid
+graph TB
+A(开始事务)--执行sql-->B("update `yangyc`.`huan415_explain` set f1=`b` where f1=`a`");
+B-->C{"判断数据也是否在缓存中"}
+C--是-->D1("返回数据页到数据行缓冲区 data buffer page")
+C--否-->D2("从磁盘中读入内存")
+D2-->D1
+D1-->E("修改前将数据写入undo log")
+E-->F("内存中修改数据")
+F-->G("修改后数据写入redo缓冲区：redo buffer page 记录的是修改过程")
+G==>H("ff")
+G-->I("33")
+```
+
+```flow
+st=>start: 开始事务
+op=>operation: update `yangyc`.`huan415_explain` set f1=`b` where f1=`a`
+cond=>condition: 判断数据也是否在缓存中
+sub1=>subroutine: 从磁盘中读入内存
+io=>inputoutput: 返回数据页到数据行缓冲区 data buffer page
+undolog=>operation: 修改前将数据写入undo log
+updateData=>operation: 内存中修改数据
+redoLogBuffer=>condition: 修改后数据写入redo缓冲区：redo buffer page 记录的是修改过程
+redoLogFile=>inputoutput: innodb_flush_log_at_trx_commit控制如何写入redo log file,详见下图：
+persistent1=>inputoutput: 持久化到磁盘
+commit=>operation: 提交事务
+binlogBuffer=>operation: 记录binlog到缓冲区
+binlogData=>operation: 持久化binlog到磁盘
+e=>end: 结束框
+st(bottom)->op(bottom)->cond
+cond(no)->sub1(right)->io
+cond(yes)->io(bottom)->undolog(bottom)->updateData(bottom)->redoLogBuffer
+redoLogBuffer(no)->redoLogFile(right)->persistent
+redoLogBuffer(yes)->commit(bottom)—>binlogBuffer(bottom)->e
+```
+
+
+
 （1）.  既然修改的数据没有更新进磁盘，那么怎么读取已修改后的数据？
 
 1.  读取磁盘。2. 读取redo log数据的变化过程。整合两个结果返回
