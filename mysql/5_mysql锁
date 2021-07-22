@@ -94,17 +94,18 @@ io=>inputoutput: 返回数据页到数据行缓冲区 data buffer page
 undolog=>operation: 修改前将数据写入undo log
 updateData=>operation: 内存中修改数据
 redoLogBuffer=>condition: 修改后数据写入redo缓冲区：redo buffer page 记录的是修改过程
-redoLogFile=>inputoutput: innodb_flush_log_at_trx_commit控制如何写入redo log file,详见下图：
-persistent1=>inputoutput: 持久化到磁盘
-commit=>operation: 提交事务
-binlogBuffer=>operation: 记录binlog到缓冲区
-binlogData=>operation: 持久化binlog到磁盘
+redoLogFile=>subroutine: innodb_flush_log_at_trx_commit控制如何写入redo log file,详见下图：
+persistentRedoLog=>subroutine: 持久化binlog到磁盘
+commit=>subroutine: 提交事务
+binlogBuffer=>subroutine:  记录binlog到缓冲区
+persistentBinLog=>subroutine: 持久化binlog到磁盘
 e=>end: 结束框
 st(bottom)->op(bottom)->cond
-cond(no)->sub1(right)->io
-cond(yes)->io(bottom)->undolog(bottom)->updateData(bottom)->redoLogBuffer
-redoLogBuffer(no)->redoLogFile(right)->persistent
-redoLogBuffer(yes)->commit(bottom)—>binlogBuffer(bottom)->e
+cond(yes)->sub1(right)->io
+cond(no)->io(bottom)->undolog(bottom)->updateData->redoLogBuffer
+redoLogBuffer(no)->redoLogFile->persistentRedoLog
+redoLogBuffer(yes)->commit-->binlogBuffer->persistentBinLog
+
 ```
 
 
