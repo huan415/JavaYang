@@ -39,3 +39,8 @@ Basically Available（基本可用）、Soft state（软状态）和Eventually c
 - 软状态：允许出现的存在中间状态，不会影响系统整体可用性
 - 最终一致性：数据最终能够达到一致的状态
 
+
+
+参考：https://blog.csdn.net/qq_17555933/article/details/104257222
+
+​           https://www.cnblogs.com/duanxz/p/5229352.html
