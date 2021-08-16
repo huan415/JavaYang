@@ -28,7 +28,7 @@ JIT在即时编译器进行上下文扫描，去除不可能存在共享资源�
 
 膨胀过程：无锁 --> 偏向锁 --> 轻量级锁 --> 重量级锁
 
-![jvm_synchronized__32wei](D:\project\huan415\JavaYang\jvm\images\jvm_synchronized__32wei.png)
+![jvm_synchronized__32wei](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/jvm_synchronized__32wei.png)
 
 1. 偏向锁：大多数情况下，一个线程会多次重复进入锁，而且不存在多线程竞争
    减少CAS造作耗时

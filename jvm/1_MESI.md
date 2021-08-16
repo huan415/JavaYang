@@ -1,6 +1,6 @@
 # MESI 缓存一致性协议
 
-![](D:\project\huan415\http\JavaYang\jvm\images\jvm_MESI.jpg)
+![](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/jvm_MESI.jpg)
 
 
 

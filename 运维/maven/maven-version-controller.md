@@ -107,7 +107,7 @@ build-helper-maven-plugin作用：${maven.build.timestamp}默认是UTC时区，�
 
 效果：
 
-![1](D:\project\huan415\1.jpg)
+![maven-version-controller-1](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/maven-version-controller-1.jpg)
 
 ## 利用环境动态设置revision
 
@@ -160,14 +160,14 @@ build-helper-maven-plugin作用：${maven.build.timestamp}默认是UTC时区，�
 
 效果：
 
-![2](D:\project\huan415\2.jpg)
+![maven-version-controller-2](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/maven-version-controller-2.jpg)
 
 
 
 ## 踩坑
 
 1. <revision> 是关键字，不能随意替换
-   ![3](D:\project\huan415\3.jpg)
+   ![maven-version-controller-3](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/maven-version-controller-3.jpg)
 2.  <build>没有引用flatten-maven-plugin，业务组件在引入jar后, install时会报错，原因上面有说明
 
 ```java

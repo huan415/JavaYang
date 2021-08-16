@@ -11,7 +11,7 @@ write pos 是当前记录的位置，
 checkpoint 是当前要擦除的位置
 write pos 和checkpoint之间就是空余的空间，当write pos追上checkpoint，这时候不能再更新数据库，redo log file会将数据进行落盘，落盘后checkpoint擦除一些空间之后，再继续
 
-![mysql_log_3](D:\project\huan415\http\JavaYang\mysql\images\mysql_log_3.jpg)
+![mysql_log_3](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/mysql_log_3.jpg)
 
 ## undolog
 
@@ -38,9 +38,9 @@ log生成时间
 
 1时：数据不会丢失，但是性能差点
 
-​      ![](D:\project\huan415\http\JavaYang\mysql\images\mysql_log_2.jpg)
+​      ![](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/mysql_log_2.jpg)
 
-![](D:\project\huan415\http\JavaYang\mysql\visio\mysql_log.jpg)
+![](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/mysql_log.jpg)
 
 
 

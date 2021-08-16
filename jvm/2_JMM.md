@@ -52,10 +52,10 @@ B2--> C2("引用类型：引用在栈中，实例在堆中（没有内存逃逸�
 
 所有的线程在进程里排队依次执行 -->  一个线程阻塞，全部阻塞  -->  不用和内核态的切换
 
-![jvm_mesi_3](D:\project\huan415\JavaYang\jvm\images\jvm_mesi_3.png)
+![jvm_mesi_3](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/jvm_mesi_3.png)
 
 ### 内核级线程(Kernel-Level Thread)----1.2版本之后
 
 由操作系统实现
 
-![jvm_mesi_4](D:\project\huan415\JavaYang\jvm\images\jvm_mesi_4.png)
+![jvm_mesi_4](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/jvm_mesi_4.png)
