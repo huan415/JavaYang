@@ -6,9 +6,10 @@
     jmap -histo pid
 2. 查看各个代内存大小
    jmap -heap pid
-
 3. 打印堆栈信息
    jmap -dump:format=b,file=canal.hprof pid
+4. finalizerinfo 打印正等候回收的对象的信息
+   jmap -finalizerinfo pid
 
 ## Jstat
 
