@@ -37,16 +37,26 @@
 
 每个consumer group都会选择一个broker作为自己的主协调器coordinator,负责监控组内所有consumer的心跳。如果consumer宕机触发reblance机制。
 
-公式：hash(consumer groupId) % topic的分区数。算出offset提交到哪个分区，这个分区的leader所在的broker就是这个消费者组的GroupCoordinator
-(每个分区有多个副本，其中会有一个副本leader，即：每个分区都会有一个leader)4
+两种情况：
+
+* 若是消费组内尚未leader，那么第一个加入消费组的消费者即为消费组的leader
+* 公式：hash(consumer groupId) % topic的分区数。算出offset提交到哪个分区，这个分区的leader所在的broker就是这个消费者组的GroupCoordinator
+  (每个分区有多个副本，其中会有一个副本leader，即：每个分区都会有一个leader)
 
 
 
 ## 消费者Leader选举
 
+GroupCoordinator需要为消费组内的消费者选举出一个消费组的leader，这个选举的算法很简单，
+
+* 当消费组内还没有leader，那么第一个加入消费组的消费者即为消费组的leader
+* 当前leader退出消费组，则会挑选以HashMap结构保存的消费者节点数据中，第一个键值对来作为leader。（消费者的信息是以HashMap的形式存储的）
+
 第一个发送消息给GroupCoordinator的consumer被选举为leader
 
 目的：制定分区方案，制定完方案后发给GroupCoordinator，由GroupCoordinator下发给其他消费者（因为consumer之间无法直接通信）
+
+
 
 ## Consumer如何记录offset
 
@@ -66,7 +76,7 @@
      consumer启动时，会向broker发送FindCoordinatorRequest，获取组协调器GroupCoordinator并建立连接
    * 加入消费者（Join Group）
      consumer向 GroupCoordinator发送 JoinGroupRequest请求(第一个加入组织的consumer作为leader)。GroupCoordinator将这个consumer的消息告诉leader，leader负责制定分区方案
-   * （SYNC GROUP）
+   * 同步分区策略（SYNC GROUP）
      leader给GroupCoordinator发送SyncGroupRequest，
      GroupCoordinator就把分区方案下发给各 个consumer，他们会根据指定分区的leader broker进行网络连接以及消息消费
 
@@ -103,3 +113,9 @@
   ISR中最小的LEO 即为HW
   保证producer发送消息成功：leader写入消息不能马上被消息，要等到leader将消息同步到ISR中各个副本，后更新HW，这时才能被消费者消费
 * LEO  (log-end-offsets)
+  即将要写入消息的偏移量 offset
+
+
+
+url: https://www.bytelife.net/articles/62460.html
+
