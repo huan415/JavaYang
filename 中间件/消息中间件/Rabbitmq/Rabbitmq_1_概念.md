@@ -38,3 +38,11 @@
 5. topic主题模式
 6. 
 
+## 流转过程
+
+1. Producer连接Broker，建立连接(Connection)，开启信道(Channel)
+2. 声明交换器
+3. 声明队列
+4. 通过路由键和队列绑定起来
+5. Producer发送消息到Broker（指定Exchange、RoutingKey）
+6. 
