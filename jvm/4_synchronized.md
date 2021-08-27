@@ -10,6 +10,7 @@ A1("sychronized 尝试获取锁")--monitor.enter-->D("监视器（monitor）")--
 D--失败-->E2("同步队列SynchronizedQueue")--其他线程monitor.exit,出队尝试获取锁-->A1
 ```
 
+
 问题：对象存在哪里 ?
 
 1. 实例对象在堆中
@@ -17,6 +18,17 @@ D--失败-->E2("同步队列SynchronizedQueue")--其他线程monitor.exit,出队
 3. 元数据、class方法在方法区/元空间
 
  如果发生内存逃逸：则都存储在栈中
+
+
+
+## Synchronized字段名关键字
+
+1. Synchronized修饰代码快
+   * 关键字：monitorenter、monitorexit  	
+2. Synchronized修饰方法
+   * 关键字：ACC_SYNCHRONIZED （JVM 通过ACC_SYNCHRONIZED判断一个方法是不是同步方法）
+
+
 
 ## 锁的粗化
 

@@ -26,7 +26,7 @@
    ![canal_cpu__jstat](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/canal_cpu_jstat.jpg)
 3. Jmap -histo查看哪个类占用内存多（这一步是弯路，对这次排除没什么用，不过也记录一下）
    ![canal_cpu_jmap_histo](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/canal_cpu_jmap_histo.jpg)
-4. Jmap -heap查看各个代内存情况
+4. Jmap -heap pid 查看各个代内存情况
    刚看到这里很懵，老年代大小不足0.1M
    ![canal_cpu_jmap_heap](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/canal_cpu_jmap_heap.jpg)
 5. ps -ef|grep canal 查看启动参数
