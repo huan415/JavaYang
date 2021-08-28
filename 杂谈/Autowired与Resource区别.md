@@ -63,7 +63,7 @@ field 注入最为常见，其优缺点如下：
 ## @Autowired
 
 1. 装配顺序：
-   （1）按typep匹配
+   （1）按type匹配
    （2）按name匹配（如果按type发现有多个bean）
    （3）按@Qualifier指定的name匹配（有@Qualifier）
              按变量名匹配（没有@Qualifier）
