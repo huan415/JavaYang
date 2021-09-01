@@ -34,19 +34,22 @@
    删除策略：
 
    * 检测易失数据
-     volatile-lru：挑选最近最少使用的数据淘汰
-     volatile-lfu：挑选最近使用次数最少的数据淘汰
-     volatile-ttl：挑选将要过期的数据进行淘汰
-     volatile-random：任意选择数据进行淘汰
-   * 检测全库数据allkeys-lru：挑选最近最少使用的数据进行淘汰
-     allkeys-lfu：挑选最近使用次数最少的数据淘汰
-     allkeys-random：任意选择数据进行淘汰
+     volatile-lru (Least Recently Used)：最长时间未被使用
+     volatile-lfu (Least Frequently Used)：最近使用最少
+     volatile-ttl：将要过期
+     volatile-random：任意
+   * 检测全库数据
+     allkeys-lru：最长时间未被使用
+     allkeys-lfu：最近使用最少
+     allkeys-random：任意
    * 放弃数据驱逐
      no-enviction：禁止驱逐数据，会引发错误OOM
 
 ## 跳跃表
 
-
+链表：要查找一个元素，从头开始遍历链表，效率低（时间复杂读：O(n) ）
+跳跃表优化：在链表上创建索引，每拉个节点提取一个节点到上层，把提取出来的新元素(只存储关键字和指针)组成新链表作为索引。（空间换时间）
+参考url: https://www.cnblogs.com/hunternet/p/11248192.html
 
 ## 位图bitmap
 
@@ -70,7 +73,7 @@ getbit yangyc:huan415:uerid 0
 # 1.pfcount 获取计数（类似于set集合的scard）
 ```
 
-## SDS（动态字符串）
+## SDS（simple dynamic string 动态字符串）
 
 1. 于C语言字符串的区别
 
@@ -98,3 +101,18 @@ getbit yangyc:huan415:uerid 0
    * 触发收缩操作
      * 负载因子小于0.1
 
+## Redis实现延迟队列
+
+* sortedset结构：与Sets类型极为相似，不允许重复。
+                               每一个成员都有score，按score排序（score可以重复）
+* zadd命令：加入成员(包括score)到有序集合
+                       zadd key score value
+* zrangebyscore命令：返回有序集合中指定分数区间的成员列表（按score排序）
+                       zrangebyscore key min max
+* 延迟队列：
+  1. zadd key  执行时间作为score
+  2. zrangebyscore 获取N秒内的数据轮询进行处理
+
+![](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/3_redis_zadd_1.png)
+
+![](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/3_redis_zadd_2.png)
