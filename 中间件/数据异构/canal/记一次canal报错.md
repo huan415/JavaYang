@@ -57,3 +57,14 @@
 结论：
       原来有表了。又执行一次CREATE TABLE IF NOT EXISTS，而且字段数还比较少（字段增加没事）。这样的操作很奇怪，会不会我们的代码问题，存在这样的操作。
      跟业务开发确认，由于业务需求，执行两次创建表的sql语句（CREATE TABLE IF NOT EXISTS  ），而且两次的表结构不一样（有点奇葩，这个业务上的事儿，我在这里不多做解释了）。
+
+```mysql
+CREATE TABLE IF NOT EXISTS  `huan415_55557` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `f1` varchar(50) DEFAULT null,
+	`f2` varchar(50) DEFAULT null,
+	`f3` varchar(50) DEFAULT null,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+```
+
