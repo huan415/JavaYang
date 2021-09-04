@@ -28,6 +28,11 @@ redis重启时，重新执行appendonly.aof里的命令（恢复数据）
 
 ### 开启AOF以及fsync频率
 
+AOF步骤
+    命令追加:  执行完命令，追加到aof 缓冲区（aof_buf）末尾 --->
+    文件写入: 从页缓存（page cache）落盘，刷盘命令: fsync / fdatasync （看如下三种落盘时机）
+   文件同步：同步到集群的其他节点
+
 配置文件： 
      appendonly yes   
      \# appendfsync always    \#总是写入aof文件(每次执行命令)，非常安全，但暂用性能不好
@@ -68,3 +73,9 @@ aof-use-rdb-preamble yes \# 默认no 不开启
 ### 原理
 
 原理：AOF重写那一刻，内存做rdb快照，保存到临时appendonly.aof里，此期间执行的命令也写在临时appendonly.aof(rdb快照后面)，即：appendonly.aof文件前一半是RDB格式、后一半是AOF格式，保存完临时appendonly.aof覆盖原来的文件。
+AOF重写期间新执行的命令如何追加到AOF?
+答：这期间的命令写在AOF缓冲区和AOF重写缓冲区，并于子线程(写AOF临时文件)间建立通道，将数据告诉子线程----->
+       子线程写完RDB之后，子线程从通道中读取数据追加到临时AOF文件，超过20次读取不到数据，则完成AOF重写，覆盖旧AOF文件。然后由主线程负责继续将缓存中的命令追加到新AOF文件。
+**重点：重写AOF期间时间太长，页缓存中有太多命令，通过通道分流给子线程写入AOF，否则累计之后由主线程写入AOF，将造成阻塞**
+参考：https://www.toutiao.com/i6908602884846666244/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1630643367&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=202109031229270101351550513731622C&share_token=978eb382-a661-4f7c-89c7-5e74c866ebfb&group_id=6908602884846666244
+
