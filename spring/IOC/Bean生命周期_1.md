@@ -170,6 +170,7 @@ bean实例实现 XXXAware 接口，就能拿到 xxx 属性值 （ 调用setXXX�
 场景：比如我要设置beanname，拿到bean工厂，或者拿到bean类加载器，就可以通过实现对应的接口来实现。
 
 ```java
+// AbstractAutowireCapableBeanFactory#invokeAwareMethods
 // instance of 判断是否实现 XXXAware 接口
 private void invokeAwareMethods(final String beanName, final Object bean) {
 		if (bean instanceof Aware) {
@@ -197,6 +198,7 @@ private void invokeAwareMethods(final String beanName, final Object bean) {
 调用时机：bean实例化、依赖注入之后，初始化之前
 
 ```java
+// AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsBeforeInitialization
 @Override
 	public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName)
 			throws BeansException {
@@ -233,6 +235,8 @@ private void invokeAwareMethods(final String beanName, final Object bean) {
    ![](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/ioc_intitMethod_1.jpg)
 
 ```java
+// AbstractAutowireCapableBeanFactory#invokeInitMethods
+
 protected void invokeInitMethods(String beanName, final Object bean, @Nullable RootBeanDefinition mbd)
 			throws Throwable {
 
@@ -276,6 +280,8 @@ protected void invokeInitMethods(String beanName, final Object bean, @Nullable R
 调用时机：bean实例化、依赖注入之后，初始化之**后**
 
 ```java
+// AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsAfterInitialization
+
 @Override
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
@@ -292,7 +298,33 @@ protected void invokeInitMethods(String beanName, final Object bean, @Nullable R
 	}
 ```
 
+###  销毁--注册回调
 
+```java
+// AbstractAutowireCapableBeanFactory#registerDisposableBeanIfNecessary
+
+protected void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd) {
+		AccessControlContext acc = (System.getSecurityManager() != null ? getAccessControlContext() : null);
+		if (!mbd.isPrototype() && requiresDestruction(bean, mbd)) {
+			if (mbd.isSingleton()) {
+				// Register a DisposableBean implementation that performs all destruction
+				// work for the given bean: DestructionAwareBeanPostProcessors,
+				// DisposableBean interface, custom destroy method.
+				registerDisposableBean(beanName,
+						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+			}
+			else {
+				// A bean with a custom scope...
+				Scope scope = this.scopes.get(mbd.getScope());
+				if (scope == null) {
+					throw new IllegalStateException("No Scope registered for scope name '" + mbd.getScope() + "'");
+				}
+				scope.registerDestructionCallback(beanName,
+						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+			}
+		}
+	}
+```
 
 
 
