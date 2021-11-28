@@ -35,7 +35,7 @@
    * 对象动态年龄判断(minor gc之后)。对象年龄从小到大一个一个累加，当某个对象加入之后，其总大小大于survivor的50%时，以这个对象的年龄为临界值n，凡是年龄>=n的对象，直接进入老年代（不管年龄阈值是否达到）。
    * minor gc之后, 要把对象转移到Survivor, 发现Survivor放不下，就放到老年代
    * Minor GC之前的空间担保。有空间担保会先触发FullGC, 以确保老年代够用。
-     ![jvm_handlePromotionFailure](D:\project\huan415\http\JavaYang\jvm\images\jvm_handlePromotionFailure.jpg)
+     ![jvm_handlePromotionFailure](https://raw.githubusercontent.com/huan415/JavaYang/master/assets/jvm_handlePromotionFailure.jpg)
 
 说明：
 n：-XX:MaxTenuringThreshold     默认：15
