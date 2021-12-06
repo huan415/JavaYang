@@ -160,14 +160,14 @@ protected Object initializeBean(final String beanName, final Object bean, @Nulla
 
 #### Aware接口
 
-bean实例实现 XXXAware 接口，就能拿到 xxx 属性值 （ 调用setXXX方法 --- 每个aware都有一个setxxx接口方法 ）。
+bean 实例实现 XXXAware 接口，就能拿到 xxx 属性值 --  setXXX 方法 （ 每个 aware 都有一个 setxxx 接口方法，通过该方法获取对应的属性值 ）。
 例如：
 
-* 实例a实现 BeanNameAware --- 拿到 beanName
-* 实例b实现 BeanClassLoaderAware --- 拿到 beanClassLoaderAware
-* 实例c实现 BeanFactoryAware  ---  拿到 beanFactory
+* 实例 a 实现 BeanNameAware --- 拿到 beanName
+* 实例 b 实现 BeanClassLoaderAware --- 拿到 beanClassLoaderAware
+* 实例 c 实现 BeanFactoryAware  ---  拿到 beanFactory
 
-场景：比如我要设置beanname，拿到bean工厂，或者拿到bean类加载器，就可以通过实现对应的接口来实现。
+场景：比如我要设置 beanname，拿到 bean 工厂，或者拿到 bean类加载器，就可以通过实现对应的接口来实现。
 
 ```java
 // AbstractAutowireCapableBeanFactory#invokeAwareMethods
@@ -189,6 +189,28 @@ private void invokeAwareMethods(final String beanName, final Object bean) {
 		}
 	}
 ```
+
+
+
+1. 例如 HutoolUtil 的SpringUtil，实现了 ApplicationContextAware
+
+   ```java
+   @Component
+   public class SpringUtil implements BeanFactoryPostProcessor, ApplicationContextAware {
+       private static ConfigurableListableBeanFactory beanFactory;
+       private static ApplicationContext applicationContext;
+   
+       public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+           SpringUtil.beanFactory = beanFactory;
+       }
+   
+       public void setApplicationContext(ApplicationContext applicationContext) {
+           SpringUtil.applicationContext = applicationContext;
+       }
+   }
+   ```
+
+   
 
 
 
@@ -330,5 +352,5 @@ protected void registerDisposableBeanIfNecessary(String beanName, Object bean, R
 
 参考： 
 
-[如何记忆 Spring Bean 的生命周期]: https://www.toutiao.com/i6838849657989235213/?tt_from=weixin&amp;utm_campaign=client_share&amp;wxshare_count=1&amp;timestamp=1631074182&amp;app=news_article&amp;utm_source=weixin&amp;utm_medium=toutiao_android&amp;use_new_style=1&amp;req_id=2021090812094201013515503057006B85&amp;share_token=c6b43a7f-7658-4961-b2c6-ecc6ab5ca0df&amp;group_id=6838849657989235213
+1. [如何记忆 Spring Bean 的生命周期](https://www.toutiao.com/i6838849657989235213/?tt_from=weixin&amp;utm_campaign=client_share&amp;wxshare_count=1&amp;timestamp=1631074182&amp;app=news_article&amp;utm_source=weixin&amp;utm_medium=toutiao_android&amp;use_new_style=1&amp;req_id=2021090812094201013515503057006B85&amp;share_token=c6b43a7f-7658-4961-b2c6-ecc6ab5ca0df&amp;group_id=6838849657989235213&wid=1638671084947)
 

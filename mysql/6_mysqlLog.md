@@ -2,9 +2,23 @@
 
 ## binlog
 
+### binlog 落盘时机
+
+- 0：不去强制要求，由系统自行判断何时写入磁盘；
+- 1：每次 `commit` 的时候都要将 `binlog` 写入磁盘；
+- N：每N个事务，才会将 `binlog` 写入磁盘。
+
+### binlog日志格式
+
+STATMENT（MySQL 5.7.7 之前） 、 ROW （MySQL 5.7.7 之后） 和 MIXED
 
 
-## redolog
+
+
+
+
+
+## redolog （包括：redo log buffer 和 redo logfile）
 
 ib_logfile_*共4个，每个1G。从头开始循环写，当写满之后会进行落盘
 write pos 是当前记录的位置，

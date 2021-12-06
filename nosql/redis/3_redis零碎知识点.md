@@ -44,6 +44,22 @@
      allkeys-random：任意
    * 放弃数据驱逐
      no-enviction：禁止驱逐数据，会引发错误OOM
+   
+   ```
+   noeviction:返回错误当内存限制达到并且客户端尝试执行会让更多内存被使用的命令（大部分的写入指令，但DEL和几个例外）
+   
+   allkeys-lru: 尝试回收最少使用的键（LRU），使得新添加的数据有空间存放。
+   
+   volatile-lru: 尝试回收最少使用的键（LRU），但仅限于在过期集合的键,使得新添加的数据有空间存放。
+   
+   allkeys-random: 回收随机的键使得新添加的数据有空间存放。
+   
+   volatile-random: 回收随机的键使得新添加的数据有空间存放，但仅限于在过期集合的键。
+   
+   volatile-ttl: 回收在过期集合的键，并且优先回收存活时间（TTL）较短的键,使得新添加的数据有空间存放。
+   ```
+   
+   
 
 ## 跳跃表
 
@@ -51,22 +67,60 @@
 跳跃表优化：在链表上创建索引，每拉个节点提取一个节点到上层，把提取出来的新元素(只存储关键字和指针)组成新链表作为索引。（空间换时间）
 参考url: https://www.cnblogs.com/hunternet/p/11248192.html
 
-## 位图bitmap
+
+
+## geospatial 地理位置 （底层实现原理Zset）
+
+1. 场景：朋友的定位、附近的人、打车距离、推算地理位置信息、两地之间距离、方圆几里的人
+
+2. 命令：
+
+   ```java
+   // 添加地理位置(经纬度有范围限制，超出会报错)
+   GEOADD china:city 经度 维度 厦门
+   // 获取指定的经纬度
+   GEOPOS china:city 厦门
+   // 两个给定位置之间的距离
+   GEODIST  china:city 厦门 漳州
+   // 给定的经纬度为中心，找出某一半径内的元素
+   GEOradius china:city 经度 维度 10 km withcood
+   // 找出位于指定元素周围的元素
+   GEOradiusByMenber 经度 维度 厦门 10 km
+   // 返回一个或多个位置的GeoHash表示
+   GEOHash
+   ```
+
+   
+
+
+
+## 位图bitmap（适合两个状态）
 
 1. 位图不是特殊的数据结构，而是普通的字符串（byte 数组）
 2. 数据量大时节省空间
+3. 举例：
+   1. 打卡（1:打开，2:没打卡），一年365位的空间
+   2. 布隆过滤器
 
 ```shell
 setbit yangyc:huan415:uerid 0 1
 getbit yangyc:huan415:uerid 0
+bitcount yangyc:huan415:uerid
 ```
 
 
 
-## HyperLogLog 
+
+
+## HyperLogLog 基数统计算法
 
 1. 统计 PV，最终就可以统计出所有的 PV 数据
-   (如果用set集合的sadd，那么统计时数据量太大，且浪费空间)
+   (如果用set集的sadd，那么统计时数据量太大，且浪费空间)
+2. 举例：
+   1. 网页UV, 一个人范围网页多少次（同一个人要去重）
+      来一个用户 ID，就将用户 ID 塞进去就是（pfadd）
+3. 有点
+   1. 占用内存空间大小固定，12kb
 
 ```shell
 # 1.pfadd   增加计数（类似于set集合的sadd）
