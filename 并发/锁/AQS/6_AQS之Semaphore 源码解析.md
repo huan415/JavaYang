@@ -19,7 +19,7 @@
 | doAcquireNanos(int arg, long nanosTimeout)  | doAcquireSharedNanos(int arg, long nanosTimeout)  |
 | release(int arg)                            | releaseShared(int arg)                            |
 | tryRelease(int arg)                         | tryReleaseShared(int arg)                         |
-| -                                           | doReleaseShared()                                 |
+| doReleaseShared                             | doReleaseShared()                                 |
 
 
 
